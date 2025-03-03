@@ -1,12 +1,12 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
 
 export type Car = {
   id: string;
-  brand: string;
-  model: string;
-  setup: string;
+  name: string;
   year: number;
   plate: string;
   totalParts: string;
@@ -15,20 +15,32 @@ export type Car = {
 
 export const carColumns: ColumnDef<Car>[] = [
   {
-    accessorKey: "brand",
-    header: "Marca",
-  },
-  {
-    accessorKey: "model",
-    header: "Modello",
-  },
-  {
-    accessorKey: "setup",
-    header: "Allestimento",
+    accessorKey: "name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Macchina
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "year",
-    header: "Anno",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Anno
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "plate",
