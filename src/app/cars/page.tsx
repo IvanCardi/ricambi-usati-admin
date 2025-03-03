@@ -1,16 +1,6 @@
 import { DataTable } from "@/components/ui/data-table";
 import { carColumns } from "./car-columns";
-
-type Car = {
-  id: string;
-  brand: string;
-  model: string;
-  setup: string;
-  year: number;
-  plate: string;
-  totalParts: string;
-  soldParts: string;
-};
+import { Car } from "@/lib/models/car";
 
 const getCars = async (): Promise<Car[]> => {
   const cars = await fetch(`${process.env.BE_BASE_URL}/cars`);

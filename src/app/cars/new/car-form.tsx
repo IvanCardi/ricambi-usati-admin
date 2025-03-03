@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { submit } from "./actions";
+import { createCar } from "./actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -57,7 +57,7 @@ export function CarForm() {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const result = await submit(values);
+    const result = await createCar(values);
 
     if (result.status === "error") {
       toast("Si è verificato un errore", {
@@ -70,114 +70,112 @@ export function CarForm() {
   };
 
   return (
-    <div>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-5 w-[50%] m-auto"
-        >
-          <div className="w-full flex gap-5 items-start">
-            <FormField
-              control={form.control}
-              name="brand"
-              render={({ field }) => (
-                <FormItem className="w-[40%]">
-                  <FormLabel>Marca</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Inserisci la marca" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="model"
-              render={({ field }) => (
-                <FormItem className="w-[40%]">
-                  <FormLabel>Modello</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Inserisci il modello" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="year"
-              render={({ field }) => (
-                <FormItem className="w-[20%]">
-                  <FormLabel>Anno</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-5 w-[50%] m-auto"
+      >
+        <div className="w-full flex gap-5 items-start">
           <FormField
             control={form.control}
-            name="setup"
+            name="brand"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Setup</FormLabel>
+              <FormItem className="w-[40%]">
+                <FormLabel>Marca</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Inserisci l'allestimento" />
+                  <Input {...field} placeholder="Inserisci la marca" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <div className="w-full flex gap-5 items-start">
-            <FormField
-              control={form.control}
-              name="plate"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Targa</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Inserisci la targa" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="kilometers"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Chilometri</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+          <FormField
+            control={form.control}
+            name="model"
+            render={({ field }) => (
+              <FormItem className="w-[40%]">
+                <FormLabel>Modello</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Inserisci il modello" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="year"
+            render={({ field }) => (
+              <FormItem className="w-[20%]">
+                <FormLabel>Anno</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <FormField
+          control={form.control}
+          name="setup"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Setup</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="Inserisci l'allestimento" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="w-full flex gap-5 items-start">
+          <FormField
+            control={form.control}
+            name="plate"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Targa</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Inserisci la targa" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="kilometers"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Chilometri</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Descrizione</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Inserisci una breve descrizione del veicolo"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit">Submit</Button>
-        </form>
-      </Form>
-    </div>
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Descrizione</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Inserisci una breve descrizione del veicolo"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit">Aggiungi</Button>
+      </form>
+    </Form>
   );
 }

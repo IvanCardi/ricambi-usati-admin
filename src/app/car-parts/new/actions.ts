@@ -1,6 +1,6 @@
 "use server";
 
-export async function createCar(data: {
+export async function submit(data: {
   brand: string;
   model: string;
   setup: string;
