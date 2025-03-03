@@ -31,6 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./select";
+import { useRouter } from "next/navigation";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -41,6 +42,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [filterType, setFilterType] = useState<"name" | "plate">("name");
@@ -61,36 +63,42 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div>
-      <div className="flex items-center py-4 gap-2">
-        <Select
-          value={filterType}
-          onValueChange={(value) => setFilterType(value as "name" | "plate")}
-        >
-          <SelectTrigger className="w-[120px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem value="name">Macchina</SelectItem>
-              <SelectItem value="plate">Targa</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <Input
-          placeholder={
-            filterType === "name"
-              ? "Filtra per macchina..."
-              : "Filtra per targa..."
-          }
-          value={
-            (table.getColumn(filterType)?.getFilterValue() as string) ?? ""
-          }
-          onChange={(event) =>
-            table.getColumn(filterType)?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        ></Input>
+    <div className="flex flex-col gap-4">
+      <div className="flex justify-between">
+        <div className="flex items-center gap-2">
+          <Select
+            value={filterType}
+            onValueChange={(value) => {
+              setFilterType(value as "name" | "plate");
+              setColumnFilters([]);
+            }}
+          >
+            <SelectTrigger className="w-[120px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="name">Macchina</SelectItem>
+                <SelectItem value="plate">Targa</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Input
+            placeholder={
+              filterType === "name"
+                ? "Filtra per macchina..."
+                : "Filtra per targa..."
+            }
+            value={
+              (table.getColumn(filterType)?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn(filterType)?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          ></Input>
+        </div>
+        <Button onClick={() => router.push("/cars/new")}>Aggiungi</Button>
       </div>
       <div className="rounded-md border">
         <Table>
