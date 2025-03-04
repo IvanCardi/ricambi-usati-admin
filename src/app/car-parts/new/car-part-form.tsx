@@ -73,19 +73,20 @@ export function CarPartForm({
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const result = await createCarPart({
-      ...values,
-      carId: selectedCar?.id ?? "",
-      category: "Motore",
-      photos: [],
-    });
-
-    if (result.status === "error") {
-      toast("Si è verificato un errore", {
-        description: result.message,
+    if (selectedCar) {
+      const result = await createCarPart({
+        ...values,
+        carId: selectedCar?.id ?? "",
+        category: "Motore",
       });
-    } else {
-      toast("Componente aggiunto con successo");
+
+      if (result.status === "error") {
+        toast("Si è verificato un errore", {
+          description: result.message,
+        });
+      } else {
+        toast("Componente aggiunto con successo");
+      }
     }
   };
 
@@ -104,6 +105,11 @@ export function CarPartForm({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+            }
+          }}
           className="flex flex-col gap-5 w-full m-auto"
         >
           <FormField
@@ -113,7 +119,11 @@ export function CarPartForm({
               <FormItem className="w-full">
                 <FormLabel>Nome</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input
+                    disabled={!selectedCar}
+                    {...field}
+                    placeholder="Inserisci il nome"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -126,154 +136,176 @@ export function CarPartForm({
               <FormItem className="w-full">
                 <FormLabel>Descrizione</FormLabel>
                 <FormControl>
-                  <Textarea {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="numbers"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Numeri di parte</FormLabel>
-                <FormControl className="flex">
-                  <Input
+                  <Textarea
+                    disabled={!selectedCar}
                     {...field}
-                    value={numbersInputValue}
-                    onChange={(e) =>
-                      setNumbersInputValue(e.currentTarget.value)
-                    }
-                    onKeyDown={(e) => {
-                      if (e.code === "Enter") {
-                        const value = e.currentTarget.value.trim();
-                        if (value !== "") {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          form.setValue("numbers", [
-                            ...form.getValues("numbers"),
-                            value,
-                          ]);
-                          form.clearErrors("numbers");
-                          setNumbersInputValue("");
-                        }
-                      }
-                    }}
+                    placeholder="Inserisci la descrizione"
                   />
                 </FormControl>
-                <div className="flex gap-2 flex-wrap">
-                  {form.getValues("numbers").map((num) => (
-                    <Badge key={num}>
-                      {num}
-                      <div>
-                        <X
-                          size={16}
-                          className="cursor-pointer"
-                          onClick={() => {
-                            form.setValue(
-                              "numbers",
-                              form
-                                .getValues("numbers")
-                                .filter((n) => n !== num) as [
-                                string,
-                                ...string[]
-                              ]
-                            );
-                          }}
-                        ></X>
-                      </div>
-                    </Badge>
-                  ))}
-                </div>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="price"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Prezzo</FormLabel>
-                <FormControl>
-                  <Input type="number" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="warranty"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Garanzia</FormLabel>
-                <FormControl>
-                  <Input type="number" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="compatibleCars"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Auto compatibili</FormLabel>
-                <FormControl className="flex">
-                  <Input
-                    {...field}
-                    value={compatibleCarsInputValue}
-                    onChange={(e) =>
-                      setCompatibleCarsInputValue(e.currentTarget.value)
-                    }
-                    onKeyDown={(e) => {
-                      if (e.code === "Enter") {
-                        const value = e.currentTarget.value.trim();
-                        if (value !== "") {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          form.setValue("compatibleCars", [
-                            ...form.getValues("compatibleCars"),
-                            value,
-                          ]);
-                          form.clearErrors("compatibleCars");
-                          setCompatibleCarsInputValue("");
-                        }
+          <div className="flex gap-5 items-start">
+            <FormField
+              control={form.control}
+              name="numbers"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Numeri di parte</FormLabel>
+                  <FormControl className="flex">
+                    <Input
+                      placeholder="Inserisci i numeri di parte"
+                      disabled={!selectedCar}
+                      {...field}
+                      value={numbersInputValue}
+                      onChange={(e) =>
+                        setNumbersInputValue(e.currentTarget.value)
                       }
-                    }}
-                  />
-                </FormControl>
-                <div className="flex gap-2">
-                  {form.getValues("compatibleCars").map((num) => (
-                    <Badge key={num}>
-                      {num}
-                      <div>
-                        <X
-                          size={16}
-                          className="cursor-pointer"
-                          onClick={() => {
-                            form.setValue(
-                              "compatibleCars",
-                              form
-                                .getValues("compatibleCars")
-                                .filter((n) => n !== num) as [
-                                string,
-                                ...string[]
-                              ]
-                            );
-                          }}
-                        ></X>
-                      </div>
-                    </Badge>
-                  ))}
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                      onKeyDown={(e) => {
+                        if (e.code === "Enter") {
+                          const value = e.currentTarget.value.trim();
+                          if (value !== "") {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            form.setValue("numbers", [
+                              ...form.getValues("numbers"),
+                              value,
+                            ]);
+                            form.clearErrors("numbers");
+                            setNumbersInputValue("");
+                          }
+                        }
+                      }}
+                    />
+                  </FormControl>
+                  <div className="flex gap-2 flex-wrap">
+                    {form.getValues("numbers").map((num) => (
+                      <Badge key={num}>
+                        {num}
+                        <div>
+                          <X
+                            size={16}
+                            className="cursor-pointer"
+                            onClick={() => {
+                              form.setValue(
+                                "numbers",
+                                form
+                                  .getValues("numbers")
+                                  .filter((n) => n !== num) as [
+                                  string,
+                                  ...string[]
+                                ]
+                              );
+                            }}
+                          ></X>
+                        </div>
+                      </Badge>
+                    ))}
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="compatibleCars"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Auto compatibili</FormLabel>
+                  <FormControl className="flex">
+                    <Input
+                      placeholder="Inserisci le auto compatibili"
+                      disabled={!selectedCar}
+                      {...field}
+                      value={compatibleCarsInputValue}
+                      onChange={(e) =>
+                        setCompatibleCarsInputValue(e.currentTarget.value)
+                      }
+                      onKeyDown={(e) => {
+                        if (e.code === "Enter") {
+                          const value = e.currentTarget.value.trim();
+                          if (value !== "") {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            form.setValue("compatibleCars", [
+                              ...form.getValues("compatibleCars"),
+                              value,
+                            ]);
+                            form.clearErrors("compatibleCars");
+                            setCompatibleCarsInputValue("");
+                          }
+                        }
+                      }}
+                    />
+                  </FormControl>
+                  <div className="flex gap-2">
+                    {form.getValues("compatibleCars").map((num) => (
+                      <Badge key={num}>
+                        {num}
+                        <div>
+                          <X
+                            size={16}
+                            className="cursor-pointer"
+                            onClick={() => {
+                              form.setValue(
+                                "compatibleCars",
+                                form
+                                  .getValues("compatibleCars")
+                                  .filter((n) => n !== num) as [
+                                  string,
+                                  ...string[]
+                                ]
+                              );
+                            }}
+                          ></X>
+                        </div>
+                      </Badge>
+                    ))}
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="flex gap-5 items-start">
+            <FormField
+              control={form.control}
+              name="price"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Prezzo</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={!selectedCar}
+                      type="number"
+                      {...field}
+                      placeholder="Inserisci il prezzo"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="warranty"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Garanzia</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={!selectedCar}
+                      type="number"
+                      {...field}
+                      placeholder="Inserisci la garanzia"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <FormField
             control={form.control}
             name="photos"
@@ -282,6 +314,7 @@ export function CarPartForm({
                 <FormLabel>Foto</FormLabel>
                 <FormControl>
                   <Input
+                    disabled={!selectedCar}
                     type="file"
                     multiple
                     accept="image/*"

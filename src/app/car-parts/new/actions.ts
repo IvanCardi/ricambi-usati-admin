@@ -11,6 +11,35 @@ export async function createCarPart(data: {
   compatibleCars: string[];
   category: string;
 }): Promise<{ status: "ok" } | { status: "error"; message: string }> {
+  let photos: string[] = [];
+
+  if (data.photos && data.photos.length > 0) {
+    try {
+      const formData = new FormData();
+
+      for (const photo of data.photos) {
+        formData.append("photos", photo);
+      }
+
+      const imagesResponse = await fetch(`${process.env.BE_BASE_URL}/images`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (imagesResponse.status !== 200) {
+        return {
+          status: "error",
+          message: "Caricamento immagini non riuscito",
+        };
+      }
+
+      photos = (await imagesResponse.json()).paths;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error: unknown) {
+      return { status: "error", message: "Caricamento immagini non riuscito" };
+    }
+  }
+
   try {
     const result = await fetch(`${process.env.BE_BASE_URL}/carParts`, {
       method: "POST",
@@ -18,7 +47,10 @@ export async function createCarPart(data: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ carId: data.carId, parts: [data] }),
+      body: JSON.stringify({
+        carId: data.carId,
+        parts: [{ ...data, photos }],
+      }),
     });
 
     if (result.status !== 201) {

@@ -74,6 +74,11 @@ export function CarForm() {
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-5 w-[50%] m-auto"
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+          }
+        }}
       >
         <div className="w-full flex gap-5 items-start">
           <FormField
