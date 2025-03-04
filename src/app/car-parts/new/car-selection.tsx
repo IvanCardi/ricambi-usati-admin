@@ -38,7 +38,7 @@ export function CarSelection({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[500px] justify-between"
+          className="w-full justify-between"
           disabled={disabled}
         >
           {selectedCar
@@ -47,7 +47,7 @@ export function CarSelection({
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[500px] p-0">
+      <PopoverContent className="min-w-[500px] p-0">
         <Command>
           <CommandInput placeholder="Cerca..." />
           <CommandList>

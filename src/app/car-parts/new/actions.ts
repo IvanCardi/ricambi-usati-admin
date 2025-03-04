@@ -1,30 +1,30 @@
 "use server";
 
-export async function submit(data: {
-  brand: string;
-  model: string;
-  setup: string;
-  year: number;
-  plate: string;
-  kilometers: number;
+export async function createCarPart(data: {
+  carId: string;
+  name: string;
   description: string;
+  numbers: string[];
+  price: number;
+  warranty: number;
+  photos: File[];
+  compatibleCars: string[];
+  category: string;
 }): Promise<{ status: "ok" } | { status: "error"; message: string }> {
   try {
-    console.log(data);
-
-    const result = await fetch(`${process.env.BE_BASE_URL}/cars`, {
+    const result = await fetch(`${process.env.BE_BASE_URL}/carParts`, {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ carId: data.carId, parts: [data] }),
     });
 
     if (result.status !== 201) {
       return {
         status: "error",
-        message: getMessageForErrorCode((await result.json()).message),
+        message: (await result.json()).message,
       };
     }
 
@@ -33,12 +33,4 @@ export async function submit(data: {
   } catch (error: unknown) {
     return { status: "error", message: "" };
   }
-}
-
-function getMessageForErrorCode(code: string): string {
-  if (code === "DuplicatedCar") {
-    return "La macchina è già stata inserita";
-  }
-
-  throw new Error("invalid error code");
 }

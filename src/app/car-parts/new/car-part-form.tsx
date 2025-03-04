@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { Badge } from "@/components/ui/badge";
@@ -14,27 +15,34 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Car } from "@/lib/models/car";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { X } from "lucide-react";
+import { CircleX, X } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { CarSelection } from "./car-selection";
-import Image from "next/image";
+import { createCarPart } from "./actions";
+import { toast } from "sonner";
 
 const formSchema = z.object({
-  name: z.string().nonempty(),
-  description: z.string().nonempty(),
-  numbers: z.array(z.string().nonempty()).nonempty(),
+  name: z.string().nonempty("Inserire un valore per il nome"),
+  description: z.string().nonempty("Inserire un valore per la descrizione"),
+  numbers: z
+    .array(z.string().nonempty())
+    .nonempty("Inserire almeno un numero di parte"),
   warranty: z.preprocess(
     (a) => parseInt(z.string().parse(a), 10),
-    z.number().min(0)
+    z
+      .number({ message: "Inserire un numero" })
+      .min(0, "Inserire un numero maggiore o uguale a 0")
   ),
   price: z.preprocess(
     (a) => parseInt(z.string().parse(a), 10),
-    z.number().min(0)
+    z
+      .number({ message: "Inserire un numero" })
+      .min(0, "Inserire un numero maggiore o uguale a 0")
   ),
   compatibleCars: z.array(z.string().nonempty()),
-  photos: z.array(z.instanceof(File)),
+  photos: z.array(z.any()),
 });
 
 export function CarPartForm({
@@ -65,27 +73,34 @@ export function CarPartForm({
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-    /*  const result = await submit(values);
+    const result = await createCarPart({
+      ...values,
+      carId: selectedCar?.id ?? "",
+      category: "Motore",
+      photos: [],
+    });
 
     if (result.status === "error") {
       toast("Si è verificato un errore", {
         description: result.message,
       });
     } else {
-      toast("Macchina aggiunta con successo");
-      router.push("/cars");
-    }  */
+      toast("Componente aggiunto con successo");
+    }
   };
 
   return (
     <div className="w-[50%] m-auto flex flex-col gap-5">
-      <CarSelection
-        cars={cars}
-        selectedCar={selectedCar}
-        setSelectedCar={setSelectedCar}
-        disabled={!!selectedCarId && !!cars.find((c) => c.id === selectedCarId)}
-      />
+      <div className="w-full">
+        <CarSelection
+          cars={cars}
+          selectedCar={selectedCar}
+          setSelectedCar={setSelectedCar}
+          disabled={
+            !!selectedCarId && !!cars.find((c) => c.id === selectedCarId)
+          }
+        />
+      </div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -231,7 +246,7 @@ export function CarPartForm({
                     }}
                   />
                 </FormControl>
-                <div className="flex flex-col gap-2">
+                <div className="flex gap-2">
                   {form.getValues("compatibleCars").map((num) => (
                     <Badge key={num}>
                       {num}
@@ -279,16 +294,32 @@ export function CarPartForm({
                     }}
                   />
                 </FormControl>
-                <div className="flex space-x-2">
-                  {photoPreviews.map((src, idx) => (
-                    <Image
-                      key={idx}
-                      src={src}
-                      width={64}
-                      height={64}
-                      alt={`Preview ${idx}`}
-                      className="object-cover"
-                    />
+                <div className="flex gap-2 flex-wrap">
+                  {photoPreviews.map((src, index) => (
+                    <div key={src} className="relative ">
+                      <img
+                        src={src}
+                        alt={`Preview ${src}`}
+                        height={96}
+                        width={96}
+                        className="rounded-lg w-24 h-24 border object-cover"
+                      />
+                      <div className="absolute top-[-5px] right-[-5px]">
+                        <CircleX
+                          size={18}
+                          className="cursor-pointer bg-white rounded-full"
+                          onClick={() => {
+                            form.setValue(
+                              "photos",
+                              form.getValues("photos").toSpliced(index, 1)
+                            );
+                            setPhotoPreviews((curr) =>
+                              curr.toSpliced(index, 1)
+                            );
+                          }}
+                        ></CircleX>
+                      </div>
+                    </div>
                   ))}
                 </div>
                 <FormMessage />
