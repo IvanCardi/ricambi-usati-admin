@@ -64,7 +64,7 @@ export function CarForm() {
         description: result.message,
       });
     } else {
-      toast("Macchina aggiunta con successo");
+      toast("Macchina aggiunta con successo!");
       router.push("/cars");
     }
   };

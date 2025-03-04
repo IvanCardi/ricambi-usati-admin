@@ -22,6 +22,7 @@ import { z } from "zod";
 import { CarSelection } from "./car-selection";
 import { createCarPart } from "./actions";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().nonempty("Inserire un valore per il nome"),
@@ -52,6 +53,8 @@ export function CarPartForm({
   cars: Car[];
   selectedCarId: string | undefined;
 }) {
+  const router = useRouter();
+
   const [selectedCar, setSelectedCar] = useState<Car | undefined>(
     selectedCarId ? cars.find((c) => c.id === selectedCarId) : undefined
   );
@@ -85,7 +88,8 @@ export function CarPartForm({
           description: result.message,
         });
       } else {
-        toast("Componente aggiunto con successo");
+        toast("Componente aggiunto con successo!");
+        router.push("/car-parts");
       }
     }
   };
@@ -359,7 +363,7 @@ export function CarPartForm({
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button type="submit">Aggiungi</Button>
         </form>
       </Form>
     </div>

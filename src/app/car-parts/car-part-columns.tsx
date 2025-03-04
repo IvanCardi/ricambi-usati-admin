@@ -84,7 +84,20 @@ export const carPartColumns: ColumnDef<CarPart>[] = [
   },
   {
     accessorKey: "price",
-    header: "Prezzo",
+    header: ({ column }) => {
+      return (
+        <div className="flex gap-1 items-center">
+          <p>Prezzo</p>
+          <Button
+            variant="ghost"
+            size={"sm"}
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <ArrowUpDown />
+          </Button>
+        </div>
+      );
+    },
     cell: ({ row }) => {
       const price = row.getValue("price") as string;
 
@@ -93,7 +106,20 @@ export const carPartColumns: ColumnDef<CarPart>[] = [
   },
   {
     accessorKey: "lastUpdated",
-    header: "Ultima Modifica",
+    header: ({ column }) => {
+      return (
+        <div className="flex gap-1 items-center">
+          <p>Ultima Modifica</p>
+          <Button
+            variant="ghost"
+            size={"sm"}
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <ArrowUpDown />
+          </Button>
+        </div>
+      );
+    },
     cell: ({ row }) => {
       const date = row.getValue("lastUpdated") as string;
       const formatted = moment(date).format("DD/MM/YYYY HH:mm");
