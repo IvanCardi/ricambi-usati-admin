@@ -1,4 +1,4 @@
-import { DataTable } from "@/components/ui/data-table";
+import { CarTable } from "@/app/cars/car-table";
 import { carColumns } from "./car-columns";
 import { Car } from "@/lib/models/car";
 
@@ -13,7 +13,7 @@ export default async function Cars() {
 
   return (
     <div className="p-10">
-      <DataTable
+      <CarTable
         columns={carColumns}
         data={cars.map((c) => ({
           id: c.id,
@@ -23,7 +23,7 @@ export default async function Cars() {
           totalParts: c.totalParts,
           soldParts: c.soldParts,
         }))}
-      ></DataTable>
+      ></CarTable>
     </div>
   );
 }

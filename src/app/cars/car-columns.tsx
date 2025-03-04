@@ -18,13 +18,16 @@ export const carColumns: ColumnDef<Car>[] = [
     accessorKey: "name",
     header: ({ column }) => {
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Macchina
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+        <div className="flex gap-1 items-center">
+          <p>Macchina</p>
+          <Button
+            variant="ghost"
+            size={"sm"}
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <ArrowUpDown />
+          </Button>
+        </div>
       );
     },
   },
@@ -32,13 +35,16 @@ export const carColumns: ColumnDef<Car>[] = [
     accessorKey: "year",
     header: ({ column }) => {
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Anno
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+        <div className="flex gap-1 items-center">
+          <p>Anno</p>
+          <Button
+            variant="ghost"
+            size={"sm"}
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <ArrowUpDown />
+          </Button>
+        </div>
       );
     },
   },

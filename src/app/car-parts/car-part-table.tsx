@@ -20,9 +20,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "./button";
-import { Input } from "./input";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Button } from "../../components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -30,22 +31,23 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./select";
-import { useRouter } from "next/navigation";
+} from "@/components/ui/select";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function DataTable<TData, TValue>({
+export function CarPartTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
   const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [filterType, setFilterType] = useState<"name" | "plate">("name");
+  const [filterType, setFilterType] = useState<"name" | "category" | "status">(
+    "name"
+  );
 
   const table = useReactTable({
     data,
@@ -69,36 +71,65 @@ export function DataTable<TData, TValue>({
           <Select
             value={filterType}
             onValueChange={(value) => {
-              setFilterType(value as "name" | "plate");
+              setFilterType(value as "name" | "category" | "status");
               setColumnFilters([]);
             }}
           >
-            <SelectTrigger className="w-[120px]">
+            <SelectTrigger className="min-w-[120px]">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectItem value="name">Macchina</SelectItem>
-                <SelectItem value="plate">Targa</SelectItem>
+                <SelectItem value="name">Prodotto</SelectItem>
+                <SelectItem value="category">Categoria</SelectItem>
+                <SelectItem value="status">Stato</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Input
-            placeholder={
-              filterType === "name"
-                ? "Filtra per macchina..."
-                : "Filtra per targa..."
-            }
-            value={
-              (table.getColumn(filterType)?.getFilterValue() as string) ?? ""
-            }
-            onChange={(event) =>
-              table.getColumn(filterType)?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
-          ></Input>
+          {(filterType === "name" || filterType === "category") && (
+            <Input
+              placeholder={
+                filterType === "name"
+                  ? "Filtra per prodotto..."
+                  : "Filtra per categoria..."
+              }
+              value={
+                (table.getColumn(filterType)?.getFilterValue() as string) ?? ""
+              }
+              onChange={(event) =>
+                table.getColumn(filterType)?.setFilterValue(event.target.value)
+              }
+              className="min-w-[300px]"
+            ></Input>
+          )}
+          {filterType === "status" && (
+            <Select
+              value={
+                (table.getColumn(filterType)?.getFilterValue() as string) ?? ""
+              }
+              onValueChange={(value) => {
+                table.getColumn(filterType)?.setFilterValue(value);
+              }}
+            >
+              <SelectTrigger className="min-w-[160px]">
+                {(table.getColumn(filterType)?.getFilterValue() as string) ? (
+                  <SelectValue />
+                ) : (
+                  <p>Filtra per stato...</p>
+                )}
+                <SelectValue defaultValue={"Filtra per stato..."} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="available">Disponibile</SelectItem>
+                  <SelectItem value="pending payment">In Pagamento</SelectItem>
+                  <SelectItem value="sold">Venduto</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          )}
         </div>
-        <Button onClick={() => router.push("/cars/new")}>Aggiungi</Button>
+        <Button onClick={() => router.push("/car-parts/new")}>Aggiungi</Button>
       </div>
       <div className="rounded-md border">
         <Table>
@@ -143,7 +174,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  Nessun componente.
                 </TableCell>
               </TableRow>
             )}
