@@ -1,5 +1,7 @@
 "use server";
 
+import { ServerActionResponse } from "@/lib/serverActionResponse";
+
 export async function createCar(data: {
   brand: string;
   model: string;
@@ -8,7 +10,7 @@ export async function createCar(data: {
   plate: string;
   kilometers: number;
   description: string;
-}): Promise<{ status: "ok" } | { status: "error"; message: string }> {
+}): Promise<ServerActionResponse> {
   try {
     console.log(data);
 

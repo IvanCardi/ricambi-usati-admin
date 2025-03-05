@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { ColumnDef } from "@tanstack/react-table";
+import DiscountPopover from "./discount-popover";
 
 export type PrivateCustomer = {
   id: string;
@@ -59,9 +60,21 @@ export const companyCustomerColumns: ColumnDef<CompanyCustomer>[] = [
     accessorKey: "discount",
     header: "Sconto",
     cell: ({ row }) => {
+      const id = row.original.id;
+      const isAutomotive = row.original.isAutomotive;
       const discount = row.getValue("discount") as number;
 
-      return <div>{discount} %</div>;
+      return (
+        <div className="flex gap-2 items-center">
+          <p>{discount} %</p>
+          {isAutomotive && (
+            <DiscountPopover
+              customerId={id}
+              initialValue={discount}
+            ></DiscountPopover>
+          )}
+        </div>
+      );
     },
   },
 ];

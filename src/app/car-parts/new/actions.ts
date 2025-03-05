@@ -1,5 +1,7 @@
 "use server";
 
+import { ServerActionResponse } from "@/lib/serverActionResponse";
+
 export async function createCarPart(data: {
   carId: string;
   name: string;
@@ -10,7 +12,7 @@ export async function createCarPart(data: {
   photos: File[];
   compatibleCars: string[];
   category: string;
-}): Promise<{ status: "ok" } | { status: "error"; message: string }> {
+}): Promise<ServerActionResponse> {
   let photos: string[] = [];
 
   if (data.photos && data.photos.length > 0) {

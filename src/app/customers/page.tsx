@@ -7,7 +7,9 @@ import {
 } from "./customer-columns";
 
 const getCustomers = async (): Promise<Customer[]> => {
-  const customers = await fetch(`${process.env.BE_BASE_URL}/customers`);
+  const customers = await fetch(`${process.env.BE_BASE_URL}/customers`, {
+    next: { tags: ["customers"] }, // Attach a revalidation tag
+  });
 
   return (await customers.json()) as Customer[];
 };
