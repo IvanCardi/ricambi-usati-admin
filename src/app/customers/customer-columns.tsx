@@ -18,6 +18,7 @@ export type CompanyCustomer = {
   pec: string;
   sdi: string;
   isAutomotive: boolean;
+  discount: number;
 };
 
 export const companyCustomerColumns: ColumnDef<CompanyCustomer>[] = [
@@ -45,13 +46,22 @@ export const companyCustomerColumns: ColumnDef<CompanyCustomer>[] = [
     accessorKey: "isAutomotive",
     header: "Tipologia",
     cell: ({ row }) => {
-      const isAutomotive = row.getValue("isAutomotive") as string;
+      const isAutomotive = row.getValue("isAutomotive") as boolean;
 
       if (isAutomotive) {
         return <Badge className="bg-green-500">Automotive</Badge>;
       } else {
         return <Badge className="bg-orange-300">Generica</Badge>;
       }
+    },
+  },
+  {
+    accessorKey: "discount",
+    header: "Sconto",
+    cell: ({ row }) => {
+      const discount = row.getValue("discount") as number;
+
+      return <div>{discount} %</div>;
     },
   },
 ];

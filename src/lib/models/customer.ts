@@ -15,4 +15,5 @@ export type Customer =
       email: string;
       pec: string;
       isAutomotive: boolean;
+      discount: number;
     };
