@@ -1,4 +1,4 @@
-import { CarFront, Home, Wrench } from "lucide-react";
+import { CarFront, Home, User, Wrench } from "lucide-react";
 
 import {
   Sidebar,
@@ -27,6 +27,11 @@ const items = [
     title: "Componenti",
     url: "/car-parts",
     icon: Wrench,
+  },
+  {
+    title: "Utenti",
+    url: "/customers",
+    icon: User,
   },
 ];
 
