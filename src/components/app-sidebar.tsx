@@ -1,4 +1,4 @@
-import { CarFront, Home, User, Wrench } from "lucide-react";
+import { CarFront, Home, User, Wrench, Package } from "lucide-react";
 
 import {
   Sidebar,
@@ -32,6 +32,11 @@ const items = [
     title: "Utenti",
     url: "/customers",
     icon: User,
+  },
+  {
+    title: "Ordini",
+    url: "/orders",
+    icon: Package,
   },
 ];
 
