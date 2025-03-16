@@ -38,4 +38,13 @@ export const orderColumns: ColumnDef<Order>[] = [
       }
     },
   },
+  {
+    accessorKey: "totalPrice",
+    header: "Totale",
+    cell: ({ row }) => {
+      const totalPrice = row.getValue("totalPrice") as number;
+
+      return <p>{`${totalPrice} €`}</p>;
+    },
+  },
 ];
