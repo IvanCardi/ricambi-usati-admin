@@ -133,7 +133,7 @@ export function CustomerTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  Nessuna macchina.
+                  Nessun Utente.
                 </TableCell>
               </TableRow>
             )}
