@@ -6,8 +6,9 @@ export type Order = {
         type: "private";
         firstName: string;
         lastName: string;
+        email: string;
       }
-    | { id: string; type: "company"; name: string };
+    | { id: string; type: "company"; name: string; email: string };
   address: Address;
   products: {
     id: string;

@@ -1,6 +1,13 @@
 import { Label } from "@/components/ui/label";
 import { Order } from "@/lib/models/order";
-import { BadgeEuro, Calendar, Factory, Package, User } from "lucide-react";
+import {
+  BadgeEuro,
+  Calendar,
+  Factory,
+  Mail,
+  Package,
+  User,
+} from "lucide-react";
 import StatusProgressBar from "./statusProgressBar";
 import moment from "moment";
 import { ProductTable } from "./product-table";
@@ -45,6 +52,13 @@ export default async function Details({ params }: OrderPageProps) {
                 ? `${order.customer.firstName} ${order.customer.lastName}`
                 : order.customer.name}
             </p>
+          </div>
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2">
+              <Label className="text-gray-400 uppercase text-md">Email</Label>
+              <Mail className="text-gray-400" />
+            </div>
+            <p>{order.customer.email}</p>
           </div>
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2">
