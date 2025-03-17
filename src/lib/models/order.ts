@@ -1,6 +1,6 @@
 export type Order = {
   id: string;
-  user:
+  customer:
     | {
         id: string;
         type: "private";
@@ -12,8 +12,8 @@ export type Order = {
   products: {
     id: string;
     name: string;
-    photo: string;
-    description: string;
+    price: number;
+    discountedPrice?: number;
   }[];
   status: "created" | "in payment" | "paid" | "shipped";
   totalPrice: number;
