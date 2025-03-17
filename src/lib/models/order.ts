@@ -17,6 +17,7 @@ export type Order = {
   }[];
   status: "created" | "in payment" | "paid" | "shipped";
   totalPrice: number;
+  createdAt: string;
 };
 
 export type Address = {

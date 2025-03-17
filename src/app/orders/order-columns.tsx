@@ -1,10 +1,19 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Address, Order } from "@/lib/models/order";
 import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
+import moment from "moment";
 
 export const orderColumns: ColumnDef<Order>[] = [
+  {
+    header: "Ordine",
+    cell: ({ row }) => {
+      return <p>{`Ordine ${row.index + 1}`}</p>;
+    },
+  },
   {
     accessorKey: "address",
     header: "Indirizzo",
@@ -45,6 +54,29 @@ export const orderColumns: ColumnDef<Order>[] = [
       const totalPrice = row.getValue("totalPrice") as number;
 
       return <p>{`${totalPrice} €`}</p>;
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => {
+      return (
+        <div className="flex gap-1 items-center">
+          <p>Creato</p>
+          <Button
+            variant="ghost"
+            size={"sm"}
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <ArrowUpDown />
+          </Button>
+        </div>
+      );
+    },
+    cell: ({ row }) => {
+      const date = row.getValue("createdAt") as string;
+      const formatted = moment(date).format("DD/MM/YYYY HH:mm");
+
+      return <div>{formatted}</div>;
     },
   },
 ];
