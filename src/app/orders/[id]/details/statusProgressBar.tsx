@@ -2,7 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Order } from "@/lib/models/order";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { markAsShipped } from "./actions";
 
 const statusData = {
   created: { value: 25, color: "bg-blue-400", label: "Creato" },
@@ -11,9 +12,23 @@ const statusData = {
   shipped: { value: 100, color: "bg-gray-800", label: "Spedito" },
 };
 
-export default function StatusProgressBar(props: { status: Order["status"] }) {
+export default function StatusProgressBar(props: {
+  status: Order["status"];
+  orderId: string;
+}) {
   const [status, setStatus] = useState(props.status);
   const { value, color, label } = statusData[status];
+  const [isPending, startTransition] = useTransition();
+
+  const onShippedClick = () => {
+    startTransition(async () => {
+      const response = await markAsShipped(props.orderId);
+
+      if (response.status === "ok") {
+        setStatus("shipped");
+      }
+    });
+  };
 
   return (
     <div className="relative w-full">
@@ -31,12 +46,7 @@ export default function StatusProgressBar(props: { status: Order["status"] }) {
       </p>
       {status === "paid" && (
         <div className="flex justify-end mt-4">
-          <Button
-            size={"sm"}
-            onClick={() => {
-              setStatus("shipped");
-            }}
-          >
+          <Button size={"sm"} onClick={onShippedClick} disabled={isPending}>
             Spedisci
           </Button>
         </div>

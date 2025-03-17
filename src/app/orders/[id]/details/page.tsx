@@ -13,28 +13,21 @@ import moment from "moment";
 import { ProductTable } from "./product-table";
 import { productColumns } from "./product-columns";
 
-type OrderPageProps = {
-  params: { id: string };
-};
-
 async function getOrder(id: string): Promise<Order> {
-  const orders = await fetch(`${process.env.BE_BASE_URL}/orders/${id}`, {
-    next: { tags: [`order-${id}`] }, // Attach a revalidation tag
-  });
+  const orders = await fetch(`${process.env.BE_BASE_URL}/orders/${id}`);
 
   return (await orders.json()) as Order;
 }
 
-export default async function Details({ params }: OrderPageProps) {
-  const order = await getOrder(params.id);
-
-  console.log(order);
+export default async function Details({ params }: { params: { id: string } }) {
+  const { id } = await params;
+  const order = await getOrder(id);
 
   return (
     <div className="p-10 flex flex-col gap-10">
       <div className="flex flex-col gap-3">
         <p className="font-bold">Stato</p>
-        <StatusProgressBar status={order.status} />
+        <StatusProgressBar status={order.status} orderId={order.id} />
       </div>
       <div className="mx-[200px] border border-gray-200 rounded-lg py-[24px] px-[80px] flex justify-between">
         <div className="flex flex-col gap-5">
