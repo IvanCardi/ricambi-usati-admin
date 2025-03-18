@@ -53,8 +53,26 @@ export const carColumns: ColumnDef<Car>[] = [
     header: "Targa",
   },
   {
-    accessorKey: "totalParts",
-    header: "Componenti Totali",
+    accessorKey: "parts",
+    accessorFn: (row) => ({
+      id: row.id,
+      totalParts: row.totalParts,
+      soldParts: row.soldParts,
+    }),
+    header: "Componenti In Vendita",
+    cell: ({ row }) => {
+      const { id, totalParts, soldParts } = row.getValue("parts") as {
+        id: string;
+        totalParts: number;
+        soldParts: number;
+      };
+
+      return (
+        <a href={`/car-parts?carId=${id}&status=available`}>
+          {totalParts - soldParts}
+        </a>
+      );
+    },
   },
   {
     accessorKey: "soldParts",

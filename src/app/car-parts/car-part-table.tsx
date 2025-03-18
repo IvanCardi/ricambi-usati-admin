@@ -12,17 +12,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Button } from "../../components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -32,13 +22,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { CircleX } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Button } from "../../components/ui/button";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  car: string | undefined;
+  status: string | undefined;
 }
 
 export function CarPartTable<TData, TValue>({
+  car,
+  status,
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -46,7 +52,7 @@ export function CarPartTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [filterType, setFilterType] = useState<"name" | "category" | "status">(
-    "name"
+    status ? "status" : "name"
   );
 
   const table = useReactTable({
@@ -63,6 +69,12 @@ export function CarPartTable<TData, TValue>({
       columnFilters,
     },
   });
+
+  useEffect(() => {
+    if (status) {
+      table.getColumn("status")?.setFilterValue(status);
+    }
+  }, []);
 
   return (
     <div className="flex flex-col gap-4">
@@ -127,6 +139,19 @@ export function CarPartTable<TData, TValue>({
                 </SelectGroup>
               </SelectContent>
             </Select>
+          )}
+          {car && (
+            <div className="relative">
+              <Badge className="relative">{car}</Badge>
+              <CircleX
+                onClick={() => {
+                  setFilterType("name");
+                  setColumnFilters([]);
+                  router.push("/car-parts");
+                }}
+                className="absolute top-[-4px] right-[-8px] bg-white rounded-full size-4 cursor-pointer"
+              ></CircleX>
+            </div>
           )}
         </div>
         <Button onClick={() => router.push("/car-parts/new")}>Aggiungi</Button>
