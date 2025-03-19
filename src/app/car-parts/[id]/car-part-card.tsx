@@ -31,7 +31,8 @@ import { toast } from "sonner";
 import { z } from "zod";
 import noImagePlaceholder from "../../../../public/no-image-placeholder.jpg";
 import CarPartStatusBadge from "../car-part-status-badge";
-import { updateCarPart } from "./actions";
+import { deleteCarPart, updateCarPart } from "./actions";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().nonempty("Inserire un valore per il nome"),
@@ -50,6 +51,7 @@ const formSchema = z.object({
 });
 
 export default function CarPartCard({ part }: { part: CarPart }) {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     // disabled: part.status === "sold",
     resolver: zodResolver(formSchema),
@@ -94,6 +96,18 @@ export default function CarPartCard({ part }: { part: CarPart }) {
         setNewlyAddedPhotos([]);
         toast("Componente aggiornato con successo!");
       }
+    }
+  };
+
+  const onDelete = async () => {
+    const result = await deleteCarPart(part.id);
+
+    if (result.status === "error") {
+      toast("Si è verificato un errore", {
+        description: result.message,
+      });
+    } else {
+      router.push("/car-parts");
     }
   };
 
@@ -465,7 +479,10 @@ export default function CarPartCard({ part }: { part: CarPart }) {
           </CardContent>
           <CardFooter>
             {part.status !== "sold" && (
-              <div className="flex justify-end w-full">
+              <div className="flex justify-end gap-3 w-full">
+                <Button className="bg-red-500" type="button" onClick={onDelete}>
+                  Elimina
+                </Button>
                 <Button type="submit" disabled={!isDirty()}>
                   Aggiorna
                 </Button>

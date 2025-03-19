@@ -56,3 +56,27 @@ export async function updateCarPart(
     return { status: "error", message: "" };
   }
 }
+
+export async function deleteCarPart(id: string): Promise<ServerActionResponse> {
+  try {
+    const result = await fetch(`${process.env.BE_BASE_URL}/carParts/${id}`, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (result.status !== 200) {
+      return {
+        status: "error",
+        message: (await result.json()).message,
+      };
+    }
+
+    return { status: "ok" };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (error: unknown) {
+    return { status: "error", message: "" };
+  }
+}
