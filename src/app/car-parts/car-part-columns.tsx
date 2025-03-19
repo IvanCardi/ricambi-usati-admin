@@ -41,7 +41,11 @@ export const carPartColumns: ColumnDef<CarPart>[] = [
     cell: ({ row }) => {
       const { id, name } = row.getValue("name") as { id: string; name: string };
 
-      return <Link href={`/car-parts/${id}`}>{name}</Link>;
+      return (
+        <Link className="hover:underline" href={`/car-parts/${id}`}>
+          {name}
+        </Link>
+      );
     },
   },
   {

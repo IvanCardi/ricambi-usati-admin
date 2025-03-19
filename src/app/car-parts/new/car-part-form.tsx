@@ -27,21 +27,16 @@ import { useRouter } from "next/navigation";
 const formSchema = z.object({
   name: z.string().nonempty("Inserire un valore per il nome"),
   description: z.string().nonempty("Inserire un valore per la descrizione"),
+  category: z.string().nonempty("Inserisci una categoria"),
   numbers: z
     .array(z.string().nonempty())
     .nonempty("Inserire almeno un numero di parte"),
-  warranty: z.preprocess(
-    (a) => parseInt(z.string().parse(a), 10),
-    z
-      .number({ message: "Inserire un numero" })
-      .min(0, "Inserire un numero maggiore o uguale a 0")
-  ),
-  price: z.preprocess(
-    (a) => parseInt(z.string().parse(a), 10),
-    z
-      .number({ message: "Inserire un numero" })
-      .min(0, "Inserire un numero maggiore o uguale a 0")
-  ),
+  warranty: z
+    .number({ message: "Inserire un numero" })
+    .min(0, "Inserire un numero maggiore o uguale a 0"),
+  price: z
+    .number({ message: "Inserire un numero" })
+    .min(0, "Inserire un numero maggiore o uguale a 0"),
   compatibleCars: z.array(z.string().nonempty()),
   photos: z.array(z.any()),
 });
@@ -63,6 +58,7 @@ export function CarPartForm({
     defaultValues: {
       name: "",
       description: "",
+      category: "",
       numbers: [],
       compatibleCars: [],
       price: 0,
@@ -80,7 +76,6 @@ export function CarPartForm({
       const result = await createCarPart({
         ...values,
         carId: selectedCar?.id ?? "",
-        category: "Motore",
       });
 
       if (result.status === "error") {
@@ -144,6 +139,23 @@ export function CarPartForm({
                     disabled={!selectedCar}
                     {...field}
                     placeholder="Inserisci la descrizione"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="category"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Categoria</FormLabel>
+                <FormControl>
+                  <Input
+                    disabled={!selectedCar}
+                    {...field}
+                    placeholder="Inserisci la categoria"
                   />
                 </FormControl>
                 <FormMessage />
@@ -285,6 +297,9 @@ export function CarPartForm({
                       type="number"
                       {...field}
                       placeholder="Inserisci il prezzo"
+                      onChange={(e) =>
+                        field.onChange(e.target.valueAsNumber || 0)
+                      }
                     />
                   </FormControl>
                   <FormMessage />
@@ -303,6 +318,9 @@ export function CarPartForm({
                       type="number"
                       {...field}
                       placeholder="Inserisci la garanzia"
+                      onChange={(e) =>
+                        field.onChange(e.target.valueAsNumber || 0)
+                      }
                     />
                   </FormControl>
                   <FormMessage />
