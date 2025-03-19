@@ -25,20 +25,14 @@ const formSchema = z.object({
   brand: z.string().nonempty("Inserire un valore per la marca"),
   model: z.string().nonempty("Inserire un valore per il modello"),
   setup: z.string().nonempty("Inserire un valore per l'allestimento"),
-  year: z.preprocess(
-    (a) => parseInt(z.string().parse(a), 10),
-    z
-      .number({ message: "Inserire un numero" })
-      .min(2000, "Inserire un numero maggiore di 2000")
-      .max(moment().year(), "Inserire un numero minore dell'anno corrente")
-  ),
+  year: z
+    .number({ message: "Inserire un numero" })
+    .min(2000, "Inserire un numero maggiore di 2000")
+    .max(moment().year(), "Inserire un numero minore dell'anno corrente"),
   description: z.string().nonempty("Inserire un valore per la descrizione"),
-  kilometers: z.preprocess(
-    (a) => parseInt(z.string().parse(a), 10),
-    z
-      .number({ message: "Inserire un numero" })
-      .min(0, "Inserire un numero maggiore o uguale a 0")
-  ),
+  kilometers: z
+    .number({ message: "Inserire un numero" })
+    .min(0, "Inserire un numero maggiore o uguale a 0"),
 });
 
 export function CarForm() {
@@ -114,7 +108,13 @@ export function CarForm() {
               <FormItem className="w-[20%]">
                 <FormLabel>Anno</FormLabel>
                 <FormControl>
-                  <Input type="number" {...field} />
+                  <Input
+                    type="number"
+                    {...field}
+                    onChange={(e) =>
+                      field.onChange(e.target.valueAsNumber || 0)
+                    }
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -155,7 +155,13 @@ export function CarForm() {
               <FormItem className="w-full">
                 <FormLabel>Chilometri</FormLabel>
                 <FormControl>
-                  <Input type="number" {...field} />
+                  <Input
+                    type="number"
+                    {...field}
+                    onChange={(e) =>
+                      field.onChange(e.target.valueAsNumber || 0)
+                    }
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
