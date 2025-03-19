@@ -51,6 +51,7 @@ const formSchema = z.object({
 
 export default function CarPartCard({ part }: { part: CarPart }) {
   const form = useForm<z.infer<typeof formSchema>>({
+    // disabled: part.status === "sold",
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: part.name,
@@ -159,12 +160,14 @@ export default function CarPartCard({ part }: { part: CarPart }) {
                                 alt={`Image ${index}`}
                                 className="max-w-full max-h-full object-contain"
                               />
-                              <CircleX
-                                className="size-4 absolute top-0 right-0 cursor-pointer"
-                                onClick={() => {
-                                  removePhoto(src, index);
-                                }}
-                              ></CircleX>
+                              {part.status !== "sold" && (
+                                <CircleX
+                                  className="size-4 absolute top-0 right-0 cursor-pointer"
+                                  onClick={() => {
+                                    removePhoto(src, index);
+                                  }}
+                                ></CircleX>
+                              )}
                             </div>
                           </CarouselItem>
                         )
@@ -174,29 +177,31 @@ export default function CarPartCard({ part }: { part: CarPart }) {
                     <CarouselNext type="button" />
                   </Carousel>
                 </div>
-                <div>
-                  <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    ref={addPhotosRef}
-                    className="hidden"
-                    onChange={(e) => {
-                      const files = Array.from(e.target.files || []);
-                      setNewlyAddedPhotos(files);
-                      setNewlyAddedPhotoPreviews(
-                        files.map((file) => URL.createObjectURL(file))
-                      );
-                    }}
-                  />
-                  <Button
-                    type="button"
-                    size={"sm"}
-                    onClick={() => addPhotosRef.current?.click()}
-                  >
-                    Carica Immagini
-                  </Button>
-                </div>
+                {part.status !== "sold" && (
+                  <div>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      ref={addPhotosRef}
+                      className="hidden"
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files || []);
+                        setNewlyAddedPhotos(files);
+                        setNewlyAddedPhotoPreviews(
+                          files.map((file) => URL.createObjectURL(file))
+                        );
+                      }}
+                    />
+                    <Button
+                      type="button"
+                      size={"sm"}
+                      onClick={() => addPhotosRef.current?.click()}
+                    >
+                      Carica Immagini
+                    </Button>
+                  </div>
+                )}
               </div>
               <div className="flex gap-4">
                 <div className="flex flex-col gap-2">
@@ -217,6 +222,7 @@ export default function CarPartCard({ part }: { part: CarPart }) {
             </div>
             <div className="flex flex-col gap-5 w-full">
               <FormField
+                disabled={part.status === "sold"}
                 control={form.control}
                 name="name"
                 render={({ field }) => (
@@ -234,6 +240,7 @@ export default function CarPartCard({ part }: { part: CarPart }) {
                 )}
               />
               <FormField
+                disabled={part.status === "sold"}
                 control={form.control}
                 name="description"
                 render={({ field }) => (
@@ -251,6 +258,7 @@ export default function CarPartCard({ part }: { part: CarPart }) {
                 )}
               />
               <FormField
+                disabled={part.status === "sold"}
                 control={form.control}
                 name="category"
                 render={({ field }) => (
@@ -269,6 +277,7 @@ export default function CarPartCard({ part }: { part: CarPart }) {
               />
               <div className="flex gap-5 items-start">
                 <FormField
+                  disabled={part.status === "sold"}
                   control={form.control}
                   name="numbers"
                   render={({ field }) => (
@@ -307,26 +316,28 @@ export default function CarPartCard({ part }: { part: CarPart }) {
                         {form.getValues("numbers").map((num) => (
                           <Badge key={num}>
                             {num}
-                            <div>
-                              <X
-                                size={16}
-                                className="cursor-pointer"
-                                onClick={() => {
-                                  form.setValue(
-                                    "numbers",
-                                    form
-                                      .getValues("numbers")
-                                      .filter((n) => n !== num) as [
-                                      string,
-                                      ...string[]
-                                    ],
-                                    {
-                                      shouldDirty: true,
-                                    }
-                                  );
-                                }}
-                              ></X>
-                            </div>
+                            {part.status !== "sold" && (
+                              <div>
+                                <X
+                                  size={16}
+                                  className="cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue(
+                                      "numbers",
+                                      form
+                                        .getValues("numbers")
+                                        .filter((n) => n !== num) as [
+                                        string,
+                                        ...string[]
+                                      ],
+                                      {
+                                        shouldDirty: true,
+                                      }
+                                    );
+                                  }}
+                                ></X>
+                              </div>
+                            )}
                           </Badge>
                         ))}
                       </div>
@@ -335,6 +346,7 @@ export default function CarPartCard({ part }: { part: CarPart }) {
                   )}
                 />
                 <FormField
+                  disabled={part.status === "sold"}
                   control={form.control}
                   name="compatibleCars"
                   render={({ field }) => (
@@ -373,26 +385,28 @@ export default function CarPartCard({ part }: { part: CarPart }) {
                         {form.getValues("compatibleCars").map((num) => (
                           <Badge key={num}>
                             {num}
-                            <div>
-                              <X
-                                size={16}
-                                className="cursor-pointer"
-                                onClick={() => {
-                                  form.setValue(
-                                    "compatibleCars",
-                                    form
-                                      .getValues("compatibleCars")
-                                      .filter((n) => n !== num) as [
-                                      string,
-                                      ...string[]
-                                    ],
-                                    {
-                                      shouldDirty: true,
-                                    }
-                                  );
-                                }}
-                              ></X>
-                            </div>
+                            {part.status !== "sold" && (
+                              <div>
+                                <X
+                                  size={16}
+                                  className="cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue(
+                                      "compatibleCars",
+                                      form
+                                        .getValues("compatibleCars")
+                                        .filter((n) => n !== num) as [
+                                        string,
+                                        ...string[]
+                                      ],
+                                      {
+                                        shouldDirty: true,
+                                      }
+                                    );
+                                  }}
+                                ></X>
+                              </div>
+                            )}
                           </Badge>
                         ))}
                       </div>
@@ -403,6 +417,7 @@ export default function CarPartCard({ part }: { part: CarPart }) {
               </div>
               <div className="flex gap-5 items-start">
                 <FormField
+                  disabled={part.status === "sold"}
                   control={form.control}
                   name="price"
                   render={({ field }) => (
@@ -424,6 +439,7 @@ export default function CarPartCard({ part }: { part: CarPart }) {
                   )}
                 />
                 <FormField
+                  disabled={part.status === "sold"}
                   control={form.control}
                   name="warranty"
                   render={({ field }) => (
@@ -448,11 +464,13 @@ export default function CarPartCard({ part }: { part: CarPart }) {
             </div>
           </CardContent>
           <CardFooter>
-            <div className="flex justify-end w-full">
-              <Button type="submit" disabled={!isDirty()}>
-                Aggiorna
-              </Button>
-            </div>
+            {part.status !== "sold" && (
+              <div className="flex justify-end w-full">
+                <Button type="submit" disabled={!isDirty()}>
+                  Aggiorna
+                </Button>
+              </div>
+            )}
           </CardFooter>
         </form>
       </Form>

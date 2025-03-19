@@ -11,7 +11,7 @@ export type CarPart = {
   description: string;
   warranty: number; // in month
   price: number; // in €
-  status: "available" | "pending payment" | "sold"; // "available", "pending payment", "sold"
+  status: "available" | "sold";
   compatibleCars: string[];
   lastUpdated: string; // timestamp
 };

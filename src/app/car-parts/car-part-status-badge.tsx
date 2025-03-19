@@ -10,9 +10,5 @@ export default function CarPartStatusBadge({
     return <Badge className="bg-green-500">Disponibile</Badge>;
   }
 
-  if (status === "pending payment") {
-    return <Badge className="bg-orange-300">In Pagamento</Badge>;
-  }
-
   return <Badge className="bg-slate-700">Venduto</Badge>;
 }
