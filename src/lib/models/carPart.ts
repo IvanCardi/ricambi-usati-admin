@@ -4,11 +4,14 @@ export type CarPart = {
   numbers: string[];
   photos: string[];
   carId: string;
+  carBrand: string;
+  carModel: string;
+  carSetup: string;
   category: string;
   description: string;
   warranty: number; // in month
   price: number; // in €
-  status: string; // "available", "pending payment", "sold"
+  status: "available" | "pending payment" | "sold"; // "available", "pending payment", "sold"
   compatibleCars: string[];
   lastUpdated: string; // timestamp
 };

@@ -1,16 +1,16 @@
 "use client";
-
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import moment from "moment";
+import Link from "next/link";
+import CarPartStatusBadge from "./car-part-status-badge";
 
 export type CarPart = {
   id: string;
   name: string;
   category: string;
-  status: string;
+  status: "available" | "pending payment" | "sold";
   price: number;
   lastUpdated: string;
 };
@@ -18,6 +18,12 @@ export type CarPart = {
 export const carPartColumns: ColumnDef<CarPart>[] = [
   {
     accessorKey: "name",
+    accessorFn: (row) => {
+      return {
+        id: row.id,
+        name: row.name,
+      };
+    },
     header: ({ column }) => {
       return (
         <div className="flex gap-1 items-center">
@@ -31,6 +37,11 @@ export const carPartColumns: ColumnDef<CarPart>[] = [
           </Button>
         </div>
       );
+    },
+    cell: ({ row }) => {
+      const { id, name } = row.getValue("name") as { id: string; name: string };
+
+      return <Link href={`/car-parts/${id}`}>{name}</Link>;
     },
   },
   {
@@ -67,19 +78,9 @@ export const carPartColumns: ColumnDef<CarPart>[] = [
       );
     },
     cell: ({ row }) => {
-      const status = row.getValue("status") as string;
+      const status = row.getValue("status") as CarPart["status"];
 
-      if (status === "available") {
-        return <Badge className="bg-green-500">Disponibile</Badge>;
-      }
-
-      if (status === "pending payment") {
-        return <Badge className="bg-orange-300">In Pagamento</Badge>;
-      }
-
-      if (status === "sold") {
-        return <Badge className="bg-slate-700">Venduto</Badge>;
-      }
+      return <CarPartStatusBadge status={status}></CarPartStatusBadge>;
     },
   },
   {
