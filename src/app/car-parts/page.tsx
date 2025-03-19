@@ -2,6 +2,7 @@ import { CarPart } from "@/lib/models/carPart";
 import { carPartColumns } from "./car-part-columns";
 import { CarPartTable } from "./car-part-table";
 import { Car } from "@/lib/models/car";
+import { PageProps } from "@/lib/pageProps";
 
 const getCarParts = async (carId: string | undefined): Promise<CarPart[]> => {
   const carParts = await fetch(
@@ -17,11 +18,7 @@ const getCar = async (id: string | undefined): Promise<Car> => {
   return (await car.json()) as Car;
 };
 
-export default async function Cars({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
+export default async function Cars({ searchParams }: PageProps) {
   const { carId, status } = await searchParams;
 
   const carParts = await getCarParts(carId as string | undefined);

@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/table";
 import { CircleX } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "../../components/ui/button";
 
 interface DataTableProps<TData, TValue> {
@@ -50,7 +50,9 @@ export function CarPartTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
+    status ? [{ id: "status", value: status }] : []
+  );
   const [filterType, setFilterType] = useState<"name" | "category" | "status">(
     status ? "status" : "name"
   );
@@ -70,11 +72,11 @@ export function CarPartTable<TData, TValue>({
     },
   });
 
-  useEffect(() => {
+  /*  useEffect(() => {
     if (status) {
       table.getColumn("status")?.setFilterValue(status);
     }
-  }, []);
+  }, []); */
 
   return (
     <div className="flex flex-col gap-4">

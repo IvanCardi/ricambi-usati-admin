@@ -12,6 +12,7 @@ import StatusProgressBar from "./statusProgressBar";
 import moment from "moment";
 import { ProductTable } from "./product-table";
 import { productColumns } from "./product-columns";
+import { PageProps } from "@/lib/pageProps";
 
 async function getOrder(id: string): Promise<Order> {
   const orders = await fetch(`${process.env.BE_BASE_URL}/orders/${id}`);
@@ -19,7 +20,7 @@ async function getOrder(id: string): Promise<Order> {
   return (await orders.json()) as Order;
 }
 
-export default async function Details({ params }: { params: { id: string } }) {
+export default async function Details({ params }: PageProps) {
   const { id } = await params;
   const order = await getOrder(id);
 
