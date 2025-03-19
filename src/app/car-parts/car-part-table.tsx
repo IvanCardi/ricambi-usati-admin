@@ -201,7 +201,7 @@ export function CarPartTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  Nessun componente.
+                  Nessun Componente.
                 </TableCell>
               </TableRow>
             )}
