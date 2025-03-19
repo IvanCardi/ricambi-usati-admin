@@ -23,10 +23,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { CarPart } from "@/lib/models/carPart";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { X } from "lucide-react";
+import { CircleX, X } from "lucide-react";
 import moment from "moment";
-import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -66,13 +65,23 @@ export default function CarPartCard({ part }: { part: CarPart }) {
 
   const [numbersInputValue, setNumbersInputValue] = useState("");
   const [compatibleCarsInputValue, setCompatibleCarsInputValue] = useState("");
+  const [currentPhotos, setCurrentPhotos] = useState(part.photos);
+  const addPhotosRef = useRef<HTMLInputElement>(null);
+  const [newlyAddedPhotos, setNewlyAddedPhotos] = useState<File[]>([]);
+  const [newlyAddedPhotoPreviews, setNewlyAddedPhotoPreviews] = useState<
+    string[]
+  >([]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (isDirty()) {
-      const result = await updateCarPart(part.id, {
-        ...values,
-        photos: part.photos ?? [],
-      });
+      const result = await updateCarPart(
+        part.id,
+        {
+          ...values,
+          photos: currentPhotos,
+        },
+        newlyAddedPhotos
+      );
 
       if (result.status === "error") {
         toast("Si è verificato un errore", {
@@ -80,6 +89,8 @@ export default function CarPartCard({ part }: { part: CarPart }) {
         });
       } else {
         form.reset(values);
+        setNewlyAddedPhotoPreviews([]);
+        setNewlyAddedPhotos([]);
         toast("Componente aggiornato con successo!");
       }
     }
@@ -89,9 +100,23 @@ export default function CarPartCard({ part }: { part: CarPart }) {
     return (
       form.formState.isDirty ||
       (part.compatibleCars.length === 0 &&
-        form.getValues("compatibleCars").length !== 0)
+        form.getValues("compatibleCars").length !== 0) ||
+      part.photos.length !== currentPhotos.length ||
+      newlyAddedPhotos.length > 0
     );
   };
+
+  const removePhoto = (url: string, index: number) => {
+    setCurrentPhotos((curr) => curr.filter((ph) => ph !== url));
+    setNewlyAddedPhotoPreviews((curr) => curr.filter((ph) => ph !== url));
+    setNewlyAddedPhotos((curr) =>
+      curr.filter((_, i) => i !== index - currentPhotos.length)
+    );
+  };
+
+  useEffect(() => {
+    setCurrentPhotos(part.photos);
+  }, [part.photos]);
 
   return (
     <Card>
@@ -105,28 +130,74 @@ export default function CarPartCard({ part }: { part: CarPart }) {
           }}
         >
           <CardContent className="flex gap-20 px-20 py-5 items-start">
-            <div className="w-[50%] flex flex-col gap-5">
-              <Carousel>
-                <CarouselContent>
-                  {part.photos.length === 0 && (
-                    <Image
-                      src={noImagePlaceholder}
-                      alt="no image placeholder"
-                    ></Image>
-                  )}
-                  {part.photos.map((p) => (
-                    <CarouselItem key={p}>
-                      <img
-                        className="rounded-lg"
-                        src={p}
-                        alt="product image"
-                      ></img>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious />
-                <CarouselNext />
-              </Carousel>
+            <div className="flex flex-col gap-8">
+              <div className="flex flex-col gap-2">
+                <div className="w-full max-w-[500px] mx-auto">
+                  <Carousel>
+                    <CarouselContent>
+                      {[...currentPhotos, ...newlyAddedPhotoPreviews].length ===
+                        0 && (
+                        <CarouselItem className="flex justify-center items-center">
+                          <div className="relative w-full h-[300px] flex items-center justify-center bg-[#dfeaf0] rounded-lg overflow-hidden">
+                            <img
+                              src={noImagePlaceholder.src}
+                              alt={`No image placeholder`}
+                              className="max-w-full max-h-full object-contain"
+                            />
+                          </div>
+                        </CarouselItem>
+                      )}
+                      {[...currentPhotos, ...newlyAddedPhotoPreviews].map(
+                        (src, index) => (
+                          <CarouselItem
+                            key={src + index}
+                            className="flex justify-center items-center"
+                          >
+                            <div className="relative w-full h-[300px] flex items-center justify-center bg-[#dfeaf0] rounded-lg overflow-hidden">
+                              <img
+                                src={src}
+                                alt={`Image ${index}`}
+                                className="max-w-full max-h-full object-contain"
+                              />
+                              <CircleX
+                                className="size-4 absolute top-0 right-0 cursor-pointer"
+                                onClick={() => {
+                                  removePhoto(src, index);
+                                }}
+                              ></CircleX>
+                            </div>
+                          </CarouselItem>
+                        )
+                      )}
+                    </CarouselContent>
+                    <CarouselPrevious type="button" />
+                    <CarouselNext type="button" />
+                  </Carousel>
+                </div>
+                <div>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    ref={addPhotosRef}
+                    className="hidden"
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files || []);
+                      setNewlyAddedPhotos(files);
+                      setNewlyAddedPhotoPreviews(
+                        files.map((file) => URL.createObjectURL(file))
+                      );
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    size={"sm"}
+                    onClick={() => addPhotosRef.current?.click()}
+                  >
+                    Carica Immagini
+                  </Button>
+                </div>
+              </div>
               <div className="flex gap-4">
                 <div className="flex flex-col gap-2">
                   <Label>Auto</Label>

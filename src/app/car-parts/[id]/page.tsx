@@ -3,7 +3,9 @@ import { PageProps } from "@/lib/pageProps";
 import CarPartCard from "./car-part-card";
 
 async function getCarPart(id: string): Promise<CarPart> {
-  const carPart = await fetch(`${process.env.BE_BASE_URL}/carParts/${id}`);
+  const carPart = await fetch(`${process.env.BE_BASE_URL}/carParts/${id}`, {
+    next: { tags: ["car-part"] },
+  });
 
   return (await carPart.json()) as CarPart;
 }

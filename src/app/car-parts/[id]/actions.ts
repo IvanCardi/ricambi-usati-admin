@@ -1,6 +1,8 @@
 "use server";
 
 import { ServerActionResponse } from "@/lib/serverActionResponse";
+import { uploadImages } from "@/lib/uploadImages";
+import { revalidateTag } from "next/cache";
 
 export async function updateCarPart(
   id: string,
@@ -13,8 +15,22 @@ export async function updateCarPart(
     photos: string[];
     compatibleCars: string[];
     category: string;
-  }
+  },
+  newPhotos: File[]
 ): Promise<ServerActionResponse> {
+  let photos = [...data.photos];
+  if (newPhotos && newPhotos.length > 0) {
+    const imageLoadResult = await uploadImages(newPhotos);
+
+    if (imageLoadResult.status === "error") {
+      return imageLoadResult;
+    }
+
+    const { paths } = imageLoadResult.data;
+
+    photos = [...data.photos, ...paths];
+  }
+
   try {
     const result = await fetch(`${process.env.BE_BASE_URL}/carParts/${id}`, {
       method: "PATCH",
@@ -22,7 +38,7 @@ export async function updateCarPart(
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ ...data, photos }),
     });
 
     if (result.status !== 200) {
@@ -31,6 +47,8 @@ export async function updateCarPart(
         message: (await result.json()).message,
       };
     }
+
+    revalidateTag("car-part");
 
     return { status: "ok" };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

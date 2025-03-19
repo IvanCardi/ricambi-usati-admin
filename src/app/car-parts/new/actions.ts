@@ -1,6 +1,7 @@
 "use server";
 
 import { ServerActionResponse } from "@/lib/serverActionResponse";
+import { uploadImages } from "@/lib/uploadImages";
 
 export async function createCarPart(data: {
   carId: string;
@@ -16,30 +17,15 @@ export async function createCarPart(data: {
   let photos: string[] = [];
 
   if (data.photos && data.photos.length > 0) {
-    try {
-      const formData = new FormData();
+    const imageLoadResult = await uploadImages(data.photos);
 
-      for (const photo of data.photos) {
-        formData.append("photos", photo);
-      }
-
-      const imagesResponse = await fetch(`${process.env.BE_BASE_URL}/images`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (imagesResponse.status !== 200) {
-        return {
-          status: "error",
-          message: "Caricamento immagini non riuscito",
-        };
-      }
-
-      photos = (await imagesResponse.json()).paths;
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error: unknown) {
-      return { status: "error", message: "Caricamento immagini non riuscito" };
+    if (imageLoadResult.status === "error") {
+      return imageLoadResult;
     }
+
+    const { paths } = imageLoadResult.data;
+
+    photos = [...data.photos, ...paths];
   }
 
   try {
