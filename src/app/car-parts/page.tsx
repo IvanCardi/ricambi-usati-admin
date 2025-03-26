@@ -37,8 +37,6 @@ export default async function Cars({ searchParams }: PageProps) {
     car = await getCar(carId as string);
   }
 
-  console.log(carParts);
-
   return (
     <div className="p-10">
       <CarPartTable
