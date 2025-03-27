@@ -52,8 +52,8 @@ const formSchema = z.object({
 
 export default function CarPartCard({ part }: { part: CarPart }) {
   const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
-    // disabled: part.status === "sold",
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: part.name,
@@ -236,7 +236,6 @@ export default function CarPartCard({ part }: { part: CarPart }) {
             </div>
             <div className="flex flex-col gap-5 w-full">
               <FormField
-                disabled={part.status === "sold"}
                 control={form.control}
                 name="name"
                 render={({ field }) => (
@@ -244,8 +243,8 @@ export default function CarPartCard({ part }: { part: CarPart }) {
                     <FormLabel>Nome</FormLabel>
                     <FormControl>
                       <Input
-                        /*  disabled={!selectedCar} */
                         {...field}
+                        disabled={part.status === "sold"}
                         placeholder="Inserisci il nome"
                       />
                     </FormControl>
@@ -254,7 +253,6 @@ export default function CarPartCard({ part }: { part: CarPart }) {
                 )}
               />
               <FormField
-                disabled={part.status === "sold"}
                 control={form.control}
                 name="description"
                 render={({ field }) => (
@@ -262,8 +260,8 @@ export default function CarPartCard({ part }: { part: CarPart }) {
                     <FormLabel>Descrizione</FormLabel>
                     <FormControl>
                       <Textarea
-                        /* disabled={!selectedCar} */
                         {...field}
+                        disabled={part.status === "sold"}
                         placeholder="Inserisci la descrizione"
                       />
                     </FormControl>
@@ -272,7 +270,6 @@ export default function CarPartCard({ part }: { part: CarPart }) {
                 )}
               />
               <FormField
-                disabled={part.status === "sold"}
                 control={form.control}
                 name="category"
                 render={({ field }) => (
@@ -280,8 +277,8 @@ export default function CarPartCard({ part }: { part: CarPart }) {
                     <FormLabel>Categoria</FormLabel>
                     <FormControl>
                       <Input
-                        /*  disabled={!selectedCar} */
                         {...field}
+                        disabled={part.status === "sold"}
                         placeholder="Inserisci la categoria"
                       />
                     </FormControl>
@@ -291,7 +288,6 @@ export default function CarPartCard({ part }: { part: CarPart }) {
               />
               <div className="flex gap-5 items-start">
                 <FormField
-                  disabled={part.status === "sold"}
                   control={form.control}
                   name="numbers"
                   render={({ field }) => (
@@ -300,8 +296,8 @@ export default function CarPartCard({ part }: { part: CarPart }) {
                       <FormControl className="flex">
                         <Input
                           placeholder="Inserisci i numeri di parte"
-                          /* disabled={!selectedCar} */
                           {...field}
+                          disabled={part.status === "sold"}
                           value={numbersInputValue}
                           onChange={(e) =>
                             setNumbersInputValue(e.currentTarget.value)
@@ -360,7 +356,6 @@ export default function CarPartCard({ part }: { part: CarPart }) {
                   )}
                 />
                 <FormField
-                  disabled={part.status === "sold"}
                   control={form.control}
                   name="compatibleCars"
                   render={({ field }) => (
@@ -369,8 +364,8 @@ export default function CarPartCard({ part }: { part: CarPart }) {
                       <FormControl className="flex">
                         <Input
                           placeholder="Inserisci le auto compatibili"
-                          // disabled={!selectedCar}
                           {...field}
+                          disabled={part.status === "sold"}
                           value={compatibleCarsInputValue}
                           onChange={(e) =>
                             setCompatibleCarsInputValue(e.currentTarget.value)
@@ -431,7 +426,6 @@ export default function CarPartCard({ part }: { part: CarPart }) {
               </div>
               <div className="flex gap-5 items-start">
                 <FormField
-                  disabled={part.status === "sold"}
                   control={form.control}
                   name="price"
                   render={({ field }) => (
@@ -439,9 +433,9 @@ export default function CarPartCard({ part }: { part: CarPart }) {
                       <FormLabel>Prezzo</FormLabel>
                       <FormControl>
                         <Input
-                          // disabled={!selectedCar}
                           type="number"
                           {...field}
+                          disabled={part.status === "sold"}
                           placeholder="Inserisci il prezzo"
                           onChange={(e) =>
                             field.onChange(e.target.valueAsNumber || 0)
@@ -453,7 +447,6 @@ export default function CarPartCard({ part }: { part: CarPart }) {
                   )}
                 />
                 <FormField
-                  disabled={part.status === "sold"}
                   control={form.control}
                   name="warranty"
                   render={({ field }) => (
@@ -461,9 +454,9 @@ export default function CarPartCard({ part }: { part: CarPart }) {
                       <FormLabel>Garanzia</FormLabel>
                       <FormControl>
                         <Input
-                          // disabled={!selectedCar}
                           type="number"
                           {...field}
+                          disabled={part.status === "sold"}
                           placeholder="Inserisci la garanzia"
                           onChange={(e) =>
                             field.onChange(e.target.valueAsNumber || 0)
