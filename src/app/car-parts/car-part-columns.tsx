@@ -10,7 +10,7 @@ export type CarPart = {
   id: string;
   name: string;
   category: string;
-  status: "available" | "pending payment" | "sold";
+  status: "available" | "sold";
   price: number;
   lastUpdated: string;
 };

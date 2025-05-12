@@ -14,4 +14,5 @@ export type CarPart = {
   status: "available" | "sold";
   compatibleCars: string[];
   lastUpdated: string; // timestamp
+  adHocShippingCosts?: number;
 };

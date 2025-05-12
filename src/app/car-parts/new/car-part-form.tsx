@@ -37,9 +37,10 @@ const formSchema = z.object({
     .min(0, "Inserire un numero maggiore o uguale a 0"),
   price: z
     .number({ message: "Inserire un numero" })
-    .min(0, "Inserire un numero maggiore o uguale a 0"),
+    .min(1, "Inserire un numero maggiore a 0"),
   compatibleCars: z.array(z.string().nonempty()),
   photos: z.array(z.any()),
+  adHocShippingCosts: z.number().optional(),
 });
 
 export function CarPartForm({
@@ -65,6 +66,7 @@ export function CarPartForm({
       price: 0,
       warranty: 0,
       photos: [],
+      adHocShippingCosts: 0,
     },
   });
 
@@ -76,6 +78,10 @@ export function CarPartForm({
     if (selectedCar) {
       const result = await createCarPart({
         ...values,
+        adHocShippingCosts:
+          values.adHocShippingCosts === 0
+            ? undefined
+            : values.adHocShippingCosts,
         carId: selectedCar?.id ?? "",
       });
 
@@ -321,6 +327,27 @@ export function CarPartForm({
                           type="number"
                           {...field}
                           placeholder="Inserisci la garanzia"
+                          onChange={(e) =>
+                            field.onChange(e.target.valueAsNumber || 0)
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="adHocShippingCosts"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel>Spese di spedizione dedicate</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={!selectedCar}
+                          type="number"
+                          {...field}
+                          placeholder="Inserisci il prezzo"
                           onChange={(e) =>
                             field.onChange(e.target.valueAsNumber || 0)
                           }

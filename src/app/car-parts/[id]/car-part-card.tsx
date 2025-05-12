@@ -48,6 +48,7 @@ const formSchema = z.object({
     .number({ message: "Inserire un numero" })
     .min(0, "Inserire un numero maggiore o uguale a 0"),
   compatibleCars: z.array(z.string().nonempty()),
+  adHocShippingCosts: z.number().optional(),
 });
 
 export default function CarPartCard({ part }: { part: CarPart }) {
@@ -63,6 +64,7 @@ export default function CarPartCard({ part }: { part: CarPart }) {
       compatibleCars: part.compatibleCars ?? [],
       price: part.price,
       warranty: part.warranty,
+      adHocShippingCosts: part.adHocShippingCosts ?? 0,
     },
   });
 
@@ -458,6 +460,27 @@ export default function CarPartCard({ part }: { part: CarPart }) {
                           {...field}
                           disabled={part.status === "sold"}
                           placeholder="Inserisci la garanzia"
+                          onChange={(e) =>
+                            field.onChange(e.target.valueAsNumber || 0)
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={form.control}
+                  name="adHocShippingCosts"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel>Spese di spedizione dedicate</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          {...field}
+                          disabled={part.status === "sold"}
+                          placeholder="Inserisci il prezzo"
                           onChange={(e) =>
                             field.onChange(e.target.valueAsNumber || 0)
                           }
