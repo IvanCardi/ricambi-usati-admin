@@ -12,8 +12,6 @@ export async function createCar(data: {
   description: string;
 }): Promise<ServerActionResponse> {
   try {
-    console.log(data);
-
     const result = await fetch(`${process.env.BE_BASE_URL}/cars`, {
       method: "POST",
       headers: {

@@ -4,9 +4,7 @@ import { CarPartTable } from "./car-part-table";
 import { Car } from "@/lib/models/car";
 import { PageProps } from "@/lib/pageProps";
 
-const getCarParts = async (
-  carId: string | undefined
-): Promise<{ carParts: CarPart[]; totalPages: number }> => {
+const getCarParts = async (carId: string | undefined): Promise<CarPart[]> => {
   const params = new URLSearchParams();
 
   if (carId) {
@@ -17,7 +15,7 @@ const getCarParts = async (
     `${process.env.BE_BASE_URL}/carParts?${params.toString()}`
   );
 
-  return (await carParts.json()) as { carParts: CarPart[]; totalPages: number };
+  return (await carParts.json()) as CarPart[];
 };
 
 const getCar = async (id: string | undefined): Promise<Car> => {
@@ -29,7 +27,7 @@ const getCar = async (id: string | undefined): Promise<Car> => {
 export default async function Cars({ searchParams }: PageProps) {
   const { carId, status } = await searchParams;
 
-  const { carParts } = await getCarParts(carId as string | undefined);
+  const carParts = await getCarParts(carId as string | undefined);
 
   let car: Car | undefined;
 

@@ -35,16 +35,22 @@ export default async function Details({ params }: PageProps) {
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2">
               <Label className="text-gray-400 uppercase text-md">Utente</Label>
-              {order.customer.type === "private" ? (
-                <User className="text-gray-400" />
+              {order.customer ? (
+                order.customer?.type === "private" ? (
+                  <User className="text-gray-400" />
+                ) : (
+                  <Factory className="text-gray-400" />
+                )
               ) : (
-                <Factory className="text-gray-400" />
+                <>GUEST</>
               )}
             </div>
             <p>
-              {order.customer.type === "private"
-                ? `${order.customer.firstName} ${order.customer.lastName}`
-                : order.customer.name}
+              {order.customer
+                ? order.customer.type === "private"
+                  ? `${order.customer.firstName} ${order.customer.lastName}`
+                  : order.customer.name
+                : `${order.info.firstName} ${order.info.lastName}`}
             </p>
           </div>
           <div className="flex flex-col gap-3">
@@ -52,7 +58,7 @@ export default async function Details({ params }: PageProps) {
               <Label className="text-gray-400 uppercase text-md">Email</Label>
               <Mail className="text-gray-400" />
             </div>
-            <p>{order.customer.email}</p>
+            <p>{order.customer?.email ?? order.info.email}</p>
           </div>
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2">
@@ -70,7 +76,15 @@ export default async function Details({ params }: PageProps) {
               </Label>
               <Package className="text-gray-400" />
             </div>
-            <p>{`${order.address.street} ${order.address.number}, ${order.address.city}, ${order.address.zipCode}, ${order.address.province}, ${order.address.state}`}</p>
+            <p>{`${order.address.streetName} ${
+              order.address.streetName2 ?? ""
+            } ${order.address.city ?? ""} ${
+              order.address.postalCode ?? ""
+            } ${order.address.province ?? ""} ${
+              order.address.administrativeArea ?? ""
+            } ${order.address.dependentLocality ?? ""} ${
+              order.address.country
+            }`}</p>
           </div>
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2">

@@ -13,7 +13,7 @@ export async function createCarPart(data: {
   photos: File[];
   compatibleCars: string[];
   category: string;
-  adHocShippingCosts?: number
+  adHocShippingCosts?: number;
 }): Promise<ServerActionResponse> {
   let photos: string[] = [];
 
@@ -26,7 +26,7 @@ export async function createCarPart(data: {
 
     const { paths } = imageLoadResult.data;
 
-    photos = [...data.photos, ...paths];
+    photos = paths;
   }
 
   try {

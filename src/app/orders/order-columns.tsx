@@ -51,15 +51,24 @@ export const orderColumns: ColumnDef<PartialOrderInfo>[] = [
     accessorKey: "address",
     header: "Indirizzo",
     cell: ({ row }) => {
-      const street = (row.getValue("address") as Address).street as string;
-      const number = (row.getValue("address") as Address).number as string;
-      const city = (row.getValue("address") as Address).city as string;
-      const zipCode = (row.getValue("address") as Address).zipCode as string;
-      const province = (row.getValue("address") as Address).province as string;
-      const state = (row.getValue("address") as Address).state as string;
+      const streetName = (row.getValue("address") as Address).streetName;
+      const streetName2 = (row.getValue("address") as Address).streetName2;
+      const city = (row.getValue("address") as Address).city;
+      const postalCode = (row.getValue("address") as Address)
+        .postalCode as string;
+      const province = (row.getValue("address") as Address).province;
+      const country = (row.getValue("address") as Address).country;
+      const administrativeArea = (row.getValue("address") as Address)
+        .administrativeArea;
+      const dependentLocality = (row.getValue("address") as Address)
+        .dependentLocality;
 
       return (
-        <p>{`${street} ${number}, ${city}, ${zipCode}, ${province}, ${state}`}</p>
+        <p>{`${streetName} ${streetName2 ?? ""} ${city ?? ""} ${
+          postalCode ?? ""
+        } ${province ?? ""} ${dependentLocality ?? ""} ${
+          administrativeArea ?? ""
+        } ${country}`}</p>
       );
     },
   },

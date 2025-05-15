@@ -28,7 +28,7 @@ export async function updateCarPart(
 
     const { paths } = imageLoadResult.data;
 
-    photos = [...data.photos, ...paths];
+    photos = [...photos, ...paths];
   }
 
   try {
