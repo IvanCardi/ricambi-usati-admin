@@ -33,6 +33,8 @@ import noImagePlaceholder from "../../../../public/no-image-placeholder.jpg";
 import CarPartStatusBadge from "../car-part-status-badge";
 import { deleteCarPart, updateCarPart } from "./actions";
 import { useRouter } from "next/navigation";
+import TechnicalDetails from "@/components/technical-details";
+import { v4 } from "uuid";
 
 const formSchema = z.object({
   name: z.string().nonempty("Inserire un valore per il nome"),
@@ -76,14 +78,25 @@ export default function CarPartCard({ part }: { part: CarPart }) {
   const [newlyAddedPhotoPreviews, setNewlyAddedPhotoPreviews] = useState<
     string[]
   >([]);
+  const [techDetails, setTechDetails] = useState<
+    { id: string; label: string; value: string }[]
+  >(part.technicalDetails.map((td) => ({ id: v4(), ...td })));
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (isDirty()) {
+      setTechDetails(
+        techDetails.filter(
+          (td) => td.value && td.label && td.value !== "" && td.label !== ""
+        )
+      );
       const result = await updateCarPart(
         part.id,
         {
           ...values,
           photos: currentPhotos,
+          technicalDetails: techDetails.filter(
+            (td) => td.value && td.label && td.value !== "" && td.label !== ""
+          ),
         },
         newlyAddedPhotos
       );
@@ -119,9 +132,43 @@ export default function CarPartCard({ part }: { part: CarPart }) {
       (part.compatibleCars.length === 0 &&
         form.getValues("compatibleCars").length !== 0) ||
       part.photos.length !== currentPhotos.length ||
-      newlyAddedPhotos.length > 0
+      newlyAddedPhotos.length > 0 ||
+      hasChanges(part.technicalDetails, techDetails)
     );
   };
+
+  function hasChanges(
+    oldArray: { label: string; value: string }[],
+    newArray: { label: string; value: string }[]
+  ) {
+    const oldMap = new Map(oldArray.map((item) => [item.value, item.label]));
+    const newMap = new Map(newArray.map((item) => [item.value, item.label]));
+
+    // Check for removed or changed items
+    for (const [value, oldLabel] of oldMap) {
+      if (!newMap.has(value)) {
+        return true; // item was removed
+      }
+      const newLabel = newMap.get(value);
+      if (newLabel !== oldLabel) {
+        // Only return true if new label and value are non-empty
+        if (value.trim() !== "" && newLabel?.trim() !== "") {
+          return true;
+        }
+      }
+    }
+
+    // Check for meaningful new items
+    for (const [value, label] of newMap) {
+      if (!oldMap.has(value)) {
+        if (value.trim() !== "" && label.trim() !== "") {
+          return true; // meaningful new item
+        }
+      }
+    }
+
+    return false;
+  }
 
   const removePhoto = (url: string, index: number) => {
     setCurrentPhotos((curr) => curr.filter((ph) => ph !== url));
@@ -469,7 +516,7 @@ export default function CarPartCard({ part }: { part: CarPart }) {
                     </FormItem>
                   )}
                 />
-                 <FormField
+                <FormField
                   control={form.control}
                   name="adHocShippingCosts"
                   render={({ field }) => (
@@ -491,6 +538,11 @@ export default function CarPartCard({ part }: { part: CarPart }) {
                   )}
                 />
               </div>
+              <TechnicalDetails
+                details={techDetails}
+                setDetails={setTechDetails}
+                isDisabled={false}
+              />
             </div>
           </CardContent>
           <CardFooter>

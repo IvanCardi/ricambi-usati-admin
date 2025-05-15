@@ -24,6 +24,7 @@ import { createCarPart } from "./actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import TechnicalDetails from "@/components/technical-details";
 
 const formSchema = z.object({
   name: z.string().nonempty("Inserire un valore per il nome"),
@@ -73,6 +74,9 @@ export function CarPartForm({
   const [numbersInputValue, setNumbersInputValue] = useState("");
   const [compatibleCarsInputValue, setCompatibleCarsInputValue] = useState("");
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+  const [techDetails, setTechDetails] = useState<
+    { id: string; label: string; value: string }[]
+  >([]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (selectedCar) {
@@ -83,6 +87,9 @@ export function CarPartForm({
             ? undefined
             : values.adHocShippingCosts,
         carId: selectedCar?.id ?? "",
+        technicalDetails: techDetails.filter(
+          (td) => td.value && td.label && td.value !== "" && td.label !== ""
+        ),
       });
 
       if (result.status === "error") {
@@ -410,6 +417,11 @@ export function CarPartForm({
                     <FormMessage />
                   </FormItem>
                 )}
+              />
+              <TechnicalDetails
+                details={techDetails}
+                setDetails={setTechDetails}
+                isDisabled={!selectedCar}
               />
             </CardContent>
             <CardFooter className="flex justify-end">

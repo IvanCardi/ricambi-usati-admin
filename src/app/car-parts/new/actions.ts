@@ -14,6 +14,7 @@ export async function createCarPart(data: {
   compatibleCars: string[];
   category: string;
   adHocShippingCosts?: number;
+  technicalDetails: { label: string; value: string }[];
 }): Promise<ServerActionResponse> {
   let photos: string[] = [];
 

@@ -15,6 +15,7 @@ export async function updateCarPart(
     photos: string[];
     compatibleCars: string[];
     category: string;
+    technicalDetails: { label: string; value: string }[];
   },
   newPhotos: File[]
 ): Promise<ServerActionResponse> {

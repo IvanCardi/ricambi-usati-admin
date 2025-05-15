@@ -15,4 +15,5 @@ export type CarPart = {
   compatibleCars: string[];
   lastUpdated: string; // timestamp
   adHocShippingCosts?: number;
+  technicalDetails: { label: string; value: string }[];
 };
