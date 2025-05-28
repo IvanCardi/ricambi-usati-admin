@@ -5,7 +5,9 @@ import { Order } from "@/lib/models/order";
 import { useState, useTransition } from "react";
 import { markAsShipped } from "./actions";
 
-const statusData = {
+const statusData: {
+  [key: string]: { value: number; color: string; label: string };
+} = {
   created: { value: 25, color: "bg-blue-400", label: "Creato" },
   "in payment": { value: 50, color: "bg-orange-300", label: "In Pagamento" },
   paid: { value: 75, color: "bg-green-500", label: "Pagato" },
