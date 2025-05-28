@@ -12,7 +12,8 @@ const getCarParts = async (carId: string | undefined): Promise<CarPart[]> => {
   }
 
   const carParts = await fetch(
-    `${process.env.BE_BASE_URL}/carParts?${params.toString()}`
+    `${process.env.BE_BASE_URL}/carParts?${params.toString()}`,
+    { next: { tags: ["car-parts"], revalidate: 0 } }
   );
 
   return (await carParts.json()) as CarPart[];

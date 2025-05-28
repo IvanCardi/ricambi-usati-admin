@@ -3,7 +3,9 @@ import { carColumns } from "./car-columns";
 import { Car } from "@/lib/models/car";
 
 const getCars = async (): Promise<Car[]> => {
-  const cars = await fetch(`${process.env.BE_BASE_URL}/cars`);
+  const cars = await fetch(`${process.env.BE_BASE_URL}/cars`, {
+    next: { tags: ["cars"], revalidate: 0 },
+  });
 
   return (await cars.json()) as Car[];
 };

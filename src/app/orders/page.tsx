@@ -11,7 +11,7 @@ export type PartialOrderInfo = {
 };
 const getOrders = async (): Promise<PartialOrderInfo[]> => {
   const orders = await fetch(`${process.env.BE_BASE_URL}/orders`, {
-    next: { tags: ["orders"] }, // Attach a revalidation tag
+    next: { tags: ["orders"], revalidate: 0 }, // Attach a revalidation tag
   });
 
   return (await orders.json()) as PartialOrderInfo[];
